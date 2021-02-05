@@ -62,14 +62,16 @@ def backprop(params_rn, num_entradas, num_ocultas, num_etiquetas, X, y, K):
     delta1 = delta1 / m
     delta2 = delta2 / m
 
-    delta1[:, 1:] = delta1[:, 1:] + (reg * theta1[:, 1:]) / m
-    delta2[:, 1:] = delta2[:, 1:] + (reg * theta2[:, 1:]) / m
+    delta1[:, 1:] = delta1[:, 1:] + (K * theta1[:, 1:]) / m
+    delta2[:, 1:] = delta2[:, 1:] + (K * theta2[:, 1:]) / m
 
     gradiente = np.concatenate((np.ravel(delta1), np.ravel(delta2)))
 
+    return coste, gradiente
+
 def pesosAleatorios(tam1, tam2):
     aux = 0.12
-    ret = np.random.uniform(low=aux, high = aux, size=(tam1, tam2))
+    ret = np.random.uniform(low=-aux, high = aux, size=(tam2, tam1))
     ret = np.hstack((np.ones((ret.shape[0], 1)), ret))
     return ret
 
@@ -77,9 +79,6 @@ def calcAciertos(Y, h):
     aciertos = 0
     totales = len(Y)
     dimThetas = len(h)
-
-    print(totales)
-    print(dimThetas)
 
     for i in range(dimThetas):
         r = np.argmax(h[i])
@@ -98,14 +97,14 @@ entradas = X.shape[1]
 etiquetas = len(np.unique(y))
 ocultas = [25, 50]
 landas = [0.01, 0.1, 1, 10]
-iteraciones = 50
+iteraciones = [50]
 
 y_onehot = np.zeros((len(y), etiquetas))
 for i in range(len(y)):
     y_onehot[i][y[i]] = 1
 
 for i in landas:
-    for j in range(iteraciones):
+    for j in iteraciones:
         for t in ocultas:
 
             theta1 = pesosAleatorios(len(X[0]), t)
