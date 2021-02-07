@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import scipy.optimize as opt
 from scipy.io import loadmat
 from checkNNGradients import checkNNGradients
-from displayData import displayData
 import scipy.io as out
 import os
 
@@ -133,7 +132,7 @@ for i in landas:
             print(res)
 
 dicc = {
-    "theta1" : mejores_thetas[0]
+    "theta1" : mejores_thetas[0],
     "theta2" : mejores_thetas[1]
 }
 
