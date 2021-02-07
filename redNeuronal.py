@@ -87,11 +87,12 @@ def calcAciertos(Y, h):
     porcentaje = aciertos / totales * 100
     return porcentaje
 
-data = loadmat("dataMat.mat")
+data = loadmat("/content/drive/MyDrive/AA In the house/Proyecto/dataMat2.mat")
 
 X = data["X"]
 y = data["y"].ravel()
-
+x2 = data["Xval"]
+y2 = data["yval"].ravel()
 entradas = X.shape[1]
 etiquetas = len(np.unique(y))
 ocultas = [25, 50]
@@ -121,9 +122,9 @@ for i in landas:
             theta1opt = np.reshape(thetasguays.x[:t * (entradas + 1)], (t, (entradas + 1)))
             theta2opt = np.reshape(thetasguays.x[t * (entradas + 1):], (etiquetas, (t + 1)))
 
-            a1, x2, a2, z3, h = forward_prop(X, theta1opt, theta2opt)
+            a1, x2, a2, z3, h = forward_prop(x2, theta1opt, theta2opt)
 
-            res = calcAciertos(y, h)
+            res = calcAciertos(y2, h)
 
             if(res > porcentaje):
                 porcentaje = res
