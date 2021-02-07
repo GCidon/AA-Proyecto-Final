@@ -103,6 +103,9 @@ y_onehot = np.zeros((len(y), etiquetas))
 for i in range(len(y)):
     y_onehot[i][y[i]] = 1
 
+mejores_thetas = []
+porcentaje = 0
+
 for i in landas:
     for j in iteraciones:
         for t in ocultas:
@@ -121,7 +124,21 @@ for i in landas:
 
             a1, x2, a2, z3, h = forward_prop(X, theta1opt, theta2opt)
 
-            print(calcAciertos(y, h))
+            res = calcAciertos(y, h)
+
+            if(res > porcentaje):
+                porcentaje = res
+                mejores_thetas = [theta1opt, theta2opt]
+
+            print(res)
+
+dicc = {
+    "theta1" : mejores_thetas[0]
+    "theta2" : mejores_thetas[1]
+}
+
+out.savemat("pesos.mat", dicc)
+
 
 
     
