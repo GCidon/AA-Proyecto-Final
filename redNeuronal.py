@@ -91,6 +91,8 @@ data = loadmat("dataMat.mat")
 
 X = data["X"]
 y = data["y"].ravel()
+X2 = data["Xval"]
+y2 = data["yval"].ravel()
 
 entradas = X.shape[1]
 etiquetas = len(np.unique(y))
@@ -115,20 +117,21 @@ for i in landas:
             thetas = [theta1, theta2]
 
             pesos = np.concatenate([thetas[i].ravel() for i,_ in enumerate(thetas)])
-
+            print("Optimizando thetas")
             thetasguays = opt.minimize(fun=backprop, x0=pesos, args=(entradas, t, etiquetas, X, y_onehot, i), method='TNC', jac=True, options={'maxiter':j})
-
+            print("Thetas optimizadas")
             theta1opt = np.reshape(thetasguays.x[:t * (entradas + 1)], (t, (entradas + 1)))
             theta2opt = np.reshape(thetasguays.x[t * (entradas + 1):], (etiquetas, (t + 1)))
 
-            a1, x2, a2, z3, h = forward_prop(X, theta1opt, theta2opt)
+            a1, x2, a2, z3, h = forward_prop(X2, theta1opt, theta2opt)
 
-            res = calcAciertos(y, h)
+            res = calcAciertos(y2, h)
 
             if(res > porcentaje):
                 porcentaje = res
                 mejores_thetas = [theta1opt, theta2opt]
 
+            print("Resultado con lambda:" + str(i) + ", iteraciones " + str(j) + ", capas ocultas " + str(t))
             print(res)
 
 dicc = {
