@@ -27,7 +27,7 @@ etiqueta = [] # 0 para abeja, 1 para avispa
 # Generar imagenes resizeadas
 for i in bee_train:
     if os.path.isfile(carpeta + "/bee1/" + i):
-        aux = Image.open(carpeta + "/bee1/" + i).convert('P')
+        aux = Image.open(carpeta + "/bee1/" + i).convert('L')
         aux = aux.resize((100,100), Image.ANTIALIAS)
         aux = np.asarray(aux)/255.0
         resizedbees.append(aux)
@@ -35,7 +35,7 @@ for i in bee_train:
 
 for i in wasp_train:
     if os.path.isfile(carpeta + "/wasp1/" + i):
-        aux = Image.open(carpeta + "/wasp1/" + i).convert('P')
+        aux = Image.open(carpeta + "/wasp1/" + i).convert('L')
         aux = aux.resize((100,100), Image.ANTIALIAS)
         aux = np.asarray(aux)/255.0
         resizedwasps.append(aux)
@@ -53,7 +53,7 @@ etiqueta = [] # 0 para abeja, 1 para avispa
 # Generar imagenes resizeadas
 for i in bee_test:
     if os.path.isfile(carpeta + "/bee2/" + i):
-        aux = Image.open(carpeta + "/bee2/" + i).convert('P')
+        aux = Image.open(carpeta + "/bee2/" + i).convert('L')
         aux = aux.resize((100,100), Image.ANTIALIAS)
         aux = np.asarray(aux)/255.0
         resizedbees.append(aux)
@@ -61,7 +61,7 @@ for i in bee_test:
 
 for i in wasp_test:
     if os.path.isfile(carpeta + "/wasp2/" + i):
-        aux = Image.open(carpeta + "/wasp2/" + i).convert('P')
+        aux = Image.open(carpeta + "/wasp2/" + i).convert('L')
         aux = aux.resize((100,100), Image.ANTIALIAS)
         aux = np.asarray(aux)/255.0
         resizedwasps.append(aux)
@@ -98,7 +98,7 @@ dicc = {
     "ytest": ytest
 }
 
-out.savemat("dataMat.mat", dicc)
+out.savemat("dataMatBW.mat", dicc)
 
 
 
