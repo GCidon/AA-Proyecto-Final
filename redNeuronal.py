@@ -87,7 +87,7 @@ def calcAciertos(Y, h):
     porcentaje = aciertos / totales * 100
     return porcentaje
 
-data = loadmat("dataMat.mat")
+data = loadmat("/content/drive/MyDrive/AA In the house/Proyecto/dataMat2.mat")
 
 X = data["X"]
 y = data["y"].ravel()
