@@ -6,6 +6,7 @@ from scipy.io import loadmat
 from checkNNGradients import checkNNGradients
 import scipy.io as out
 import os
+import timeit
 
 def sigmoid(z): 
     return (1 / (1 + np.exp(-z)))
@@ -39,8 +40,8 @@ def backprop(params_rn, num_entradas, num_ocultas, num_etiquetas, X, y, K):
     theta1 = np.reshape(params_rn[:num_ocultas * (num_entradas + 1)], (num_ocultas, (num_entradas+1)))
     theta2 = np.reshape(params_rn[num_ocultas * (num_entradas + 1): ], (num_etiquetas, (num_ocultas+1)))
 
-    delta1 = np.zeros_like(theta1)
-    delta2 = np.zeros_like(theta2)
+    delta1 = np.zeros((num_ocultas, num_entradas+1))
+    delta2 = np.zeros((num_etiquetas, num_ocultas + 1))
 
     a1, z2, a2, z3, a3 = forward_prop(X, theta1, theta2)
 
@@ -70,24 +71,24 @@ def backprop(params_rn, num_entradas, num_ocultas, num_etiquetas, X, y, K):
 
 def pesosAleatorios(tam1, tam2):
     aux = 0.12
-    ret = np.random.uniform(low=-aux, high = aux, size=(tam2, tam1))
-    ret = np.hstack((np.ones((ret.shape[0], 1)), ret))
+    ret = np.zeros((tam2, 1+tam1))
+    ret = np.random.rand(tam2, 1+tam1) * (2*aux) - aux
     return ret
 
 def calcAciertos(Y, h):
-    aciertos = 0
-    totales = len(Y)
-    dimThetas = len(h)
+    m = Y.shape[0]
+    res = np.empty(m)
 
-    for i in range(dimThetas):
-        r = np.argmax(h[i])
-        if(r==Y[i]):
-            aciertos+=1     
+    for i in range(m):
+        res[i] = np.argmax(h[i])
+    res = res.T
 
-    porcentaje = aciertos / totales * 100
-    return porcentaje
+    yes = (Y == res)
+    aciertos = np.sum(yes)
+    
+    return round((aciertos/m) * 100, 5)
 
-data = loadmat("/content/drive/MyDrive/AA In the house/Proyecto/dataMat2.mat")
+data = loadmat("dataMat.mat")
 
 X = data["X"]
 y = data["y"].ravel()
@@ -98,7 +99,7 @@ entradas = X.shape[1]
 etiquetas = len(np.unique(y))
 ocultas = [25, 50]
 landas = [0.01, 0.1, 1, 10]
-iteraciones = [50]
+iteraciones = [5, 20]
 
 y_onehot = np.zeros((len(y), etiquetas))
 for i in range(len(y)):
@@ -111,15 +112,16 @@ for i in landas:
     for j in iteraciones:
         for t in ocultas:
 
-            theta1 = pesosAleatorios(len(X[0]), t)
+            tic = timeit.default_timer()
+            theta1 = pesosAleatorios(entradas, t)
             theta2 = pesosAleatorios(t, etiquetas)
 
             thetas = [theta1, theta2]
 
             pesos = np.concatenate([thetas[i].ravel() for i,_ in enumerate(thetas)])
-            print("Optimizando thetas")
+
             thetasguays = opt.minimize(fun=backprop, x0=pesos, args=(entradas, t, etiquetas, X, y_onehot, i), method='TNC', jac=True, options={'maxiter':j})
-            print("Thetas optimizadas")
+            
             theta1opt = np.reshape(thetasguays.x[:t * (entradas + 1)], (t, (entradas + 1)))
             theta2opt = np.reshape(thetasguays.x[t * (entradas + 1):], (etiquetas, (t + 1)))
 
@@ -131,8 +133,11 @@ for i in landas:
                 porcentaje = res
                 mejores_thetas = [theta1opt, theta2opt]
 
+            toc = timeit.default_timer()
+            print("------------------------------------------------------------------------")
             print("Resultado con lambda:" + str(i) + ", iteraciones " + str(j) + ", capas ocultas " + str(t))
             print(res)
+            print("Tiempo: " + str(round((toc-tic), 2)))
 
 dicc = {
     "theta1" : mejores_thetas[0],

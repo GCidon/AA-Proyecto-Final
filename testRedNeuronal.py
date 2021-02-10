@@ -8,6 +8,9 @@ from displayData import displayData
 import scipy.io as out
 import os
 
+def sigmoid(z): 
+    return (1 / (1 + np.exp(-z)))
+
 def forward_prop(X, theta1, theta2):
     m = X.shape[0]
 
@@ -46,5 +49,6 @@ a1, z2, a2, z3, a3 = forward_prop(X, theta1, theta2)
 
 res = calcAciertos(y, a3)
 
-print(res)
-
+print("-------------------------------------------")
+print("Se ha obtenido un resultado del " + str(round(res, 2)) + "% de aciertos")
+print("-------------------------------------------")
