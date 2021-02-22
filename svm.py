@@ -53,7 +53,7 @@ for i in range(len(vals)):
         print(cosa)
         print(cont)
 
-svm = SVC(kernel='rbf', C=10, gamma=1/(2*(10**2)))
+svm = SVC(kernel='rbf', C=c, gamma=1/(2*(sigma**2)))
 svm.fit(X, y)
 
 h = svm.predict(Xtest)
